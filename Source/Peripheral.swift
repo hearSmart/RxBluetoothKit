@@ -402,11 +402,9 @@ public class Peripheral {
             .filter { characteristic != nil ? ($0.0 == characteristic!.characteristic) : true }
             .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                if let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
-                    if let error {
-                        throw BluetoothError.characteristicWriteFailed(characteristic, error)
-                    }
-                    return characteristic
+                let characteristic = try characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
+                if let error = error {
+                    throw BluetoothError.characteristicWriteFailed(characteristic, error)
                 }
                 return nil
             }
@@ -500,11 +498,9 @@ public class Peripheral {
             .filter { characteristic != nil ? ($0.0 == characteristic!.characteristic) : true }
             .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                if let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
-                    if let error {
-                        throw BluetoothError.characteristicReadFailed(characteristic, error)
-                    }
-                    return characteristic
+                let characteristic = try characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
+                if let error = error {
+                    throw BluetoothError.characteristicReadFailed(characteristic, error)
                 }
                 return nil
             }
@@ -572,11 +568,9 @@ public class Peripheral {
             .filter { $0.0 == characteristic.characteristic }
             .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                if let characteristic = Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
-                    if let error {
-                        throw BluetoothError.characteristicSetNotifyValueFailed(characteristic, error)
-                    }
-                    return characteristic
+                let characteristic = try Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
+                if let error = error {
+                    throw BluetoothError.characteristicSetNotifyValueFailed(characteristic, error)
                 }
                 return nil
         }
@@ -643,11 +637,9 @@ public class Peripheral {
             .filter { descriptor != nil ? ($0.0 == descriptor!.descriptor) : true }
             .compactMap { [weak self] (cbDescriptor, error) -> Descriptor? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                if let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf) {
-                    if let error {
-                        throw BluetoothError.descriptorWriteFailed(descriptor, error)
-                    }
-                    return descriptor
+                let descriptor = try descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf)
+                if let error = error {
+                    throw BluetoothError.descriptorWriteFailed(descriptor, error)
                 }
                 return nil
             }
@@ -674,11 +666,9 @@ public class Peripheral {
             .filter { descriptor != nil ? ($0.0 == descriptor!.descriptor) : true }
             .compactMap { [weak self] (cbDescriptor, error) -> Descriptor? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                if let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf) {
-                    if let error {
-                        throw BluetoothError.descriptorReadFailed(descriptor, error)
-                    }
-                    return descriptor
+                let descriptor = try descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf)
+                if let error = error {
+                    throw BluetoothError.descriptorReadFailed(descriptor, error)
                 }
                 return nil
             }
