@@ -400,13 +400,15 @@ public class Peripheral {
         let observable = delegateWrapper
             .peripheralDidWriteValueForCharacteristic
             .filter { characteristic != nil ? ($0.0 == characteristic!.characteristic) : true }
-            .map { [weak self] (cbCharacteristic, error) -> Characteristic in
+            .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
-                if let error = error {
-                    throw BluetoothError.characteristicWriteFailed(characteristic, error)
+                if let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
+                    if let error {
+                        throw BluetoothError.characteristicWriteFailed(characteristic, error)
+                    }
+                    return characteristic
                 }
-                return characteristic
+                return nil
             }
         return ensureValidPeripheralState(for: observable)
     }
@@ -496,13 +498,15 @@ public class Peripheral {
         let observable = delegateWrapper
             .peripheralDidUpdateValueForCharacteristic
             .filter { characteristic != nil ? ($0.0 == characteristic!.characteristic) : true }
-            .map { [weak self] (cbCharacteristic, error) -> Characteristic in
+            .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
-                if let error = error {
-                    throw BluetoothError.characteristicReadFailed(characteristic, error)
+                if let characteristic = characteristic ?? Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
+                    if let error {
+                        throw BluetoothError.characteristicReadFailed(characteristic, error)
+                    }
+                    return characteristic
                 }
-                return characteristic
+                return nil
             }
         return ensureValidPeripheralState(for: observable)
     }
@@ -566,13 +570,15 @@ public class Peripheral {
     public func observeNotifyValue(for characteristic: Characteristic) -> Observable<Characteristic> {
         return delegateWrapper.peripheralDidUpdateNotificationStateForCharacteristic
             .filter { $0.0 == characteristic.characteristic }
-            .map { [weak self] (cbCharacteristic, error) -> Characteristic in
+            .compactMap { [weak self] (cbCharacteristic, error) -> Characteristic? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                let characteristic = Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf)
-                if let error = error {
-                    throw BluetoothError.characteristicSetNotifyValueFailed(characteristic, error)
+                if let characteristic = Characteristic(characteristic: cbCharacteristic, peripheral: strongSelf) {
+                    if let error {
+                        throw BluetoothError.characteristicSetNotifyValueFailed(characteristic, error)
+                    }
+                    return characteristic
                 }
-                return characteristic
+                return nil
         }
     }
 
@@ -635,13 +641,15 @@ public class Peripheral {
         let observable = delegateWrapper
             .peripheralDidWriteValueForDescriptor
             .filter { descriptor != nil ? ($0.0 == descriptor!.descriptor) : true }
-            .map { [weak self] (cbDescriptor, error) -> Descriptor in
+            .compactMap { [weak self] (cbDescriptor, error) -> Descriptor? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf)
-                if let error = error {
-                    throw BluetoothError.descriptorWriteFailed(descriptor, error)
+                if let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf) {
+                    if let error {
+                        throw BluetoothError.descriptorWriteFailed(descriptor, error)
+                    }
+                    return descriptor
                 }
-                return descriptor
+                return nil
             }
         return ensureValidPeripheralState(for: observable)
     }
@@ -664,13 +672,15 @@ public class Peripheral {
         let observable = delegateWrapper
             .peripheralDidUpdateValueForDescriptor
             .filter { descriptor != nil ? ($0.0 == descriptor!.descriptor) : true }
-            .map { [weak self] (cbDescriptor, error) -> Descriptor in
+            .compactMap { [weak self] (cbDescriptor, error) -> Descriptor? in
                 guard let strongSelf = self else { throw BluetoothError.destroyed }
-                let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf)
-                if let error = error {
-                    throw BluetoothError.descriptorReadFailed(descriptor, error)
+                if let descriptor = descriptor ?? Descriptor(descriptor: cbDescriptor, peripheral: strongSelf) {
+                    if let error {
+                        throw BluetoothError.descriptorReadFailed(descriptor, error)
+                    }
+                    return descriptor
                 }
-                return descriptor
+                return nil
             }
         return ensureValidPeripheralState(for: observable)
     }
